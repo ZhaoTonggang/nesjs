@@ -1007,7 +1007,7 @@ PPU.prototype = {
 			let bgColor = this.imgPalette[0];
 			if (this.f_bgClipping === 0) {
 				// Clip left 8-pixels column:
-				for (x = 0; x < 8; x++) {
+				for (let x = 0; x < 8; x++) {
 					targetBuffer[leftIndex + x] = bgColor;
 				}
 			}

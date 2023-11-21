@@ -69,17 +69,14 @@ Mappers[0].prototype = {
 			address >> 12 // use fourth nibble (0xF000)
 		) {
 			case 0:
+			case 1: {
 				break;
-
-			case 1:
-				break;
-
+			}
 			case 2:
-				// Fall through to case 3
-			case 3:
+			case 3: {
 				// PPU Registers
 				switch (address & 0x7) {
-					case 0x0:
+					case 0x0: {
 						// 0x2000:
 						// PPU Control Register 1.
 						// (the value is stored both
@@ -87,8 +84,8 @@ Mappers[0].prototype = {
 						// PPU as flags):
 						// (not in the real NES)
 						return this.nes.cpu.mem[0x2000];
-
-					case 0x1:
+					}
+					case 0x1: {
 						// 0x2001:
 						// PPU Control Register 2.
 						// (the value is stored both
@@ -96,8 +93,8 @@ Mappers[0].prototype = {
 						// PPU as flags):
 						// (not in the real NES)
 						return this.nes.cpu.mem[0x2001];
-
-					case 0x2:
+					}
+					case 0x2: {
 						// 0x2002:
 						// PPU Status Register.
 						// The value is stored in
@@ -105,40 +102,39 @@ Mappers[0].prototype = {
 						// to as flags in the PPU.
 						// (not in the real NES)
 						return this.nes.ppu.readStatusRegister();
-
+					}
 					case 0x3:
+					case 0x5:
+					case 0x6: {
 						return 0;
-
-					case 0x4:
+					}
+					case 0x4: {
 						// 0x2004:
 						// Sprite Memory read.
 						return this.nes.ppu.sramLoad();
-					case 0x5:
-						return 0;
-
-					case 0x6:
-						return 0;
-
-					case 0x7:
+					}
+					case 0x7: {
 						// 0x2007:
 						// VRAM read:
 						return this.nes.ppu.vramLoad();
+					}
 				}
 				break;
-			case 4:
+			}
+			case 4: {
 				// Sound+Joypad registers
 				switch (address - 0x4015) {
-					case 0:
+					case 0: {
 						// 0x4015:
 						// Sound channel enable, DMC Status
 						return this.nes.papu.readReg(address);
-
-					case 1:
+					}
+					case 1: {
 						// 0x4016:
 						// Joystick 1 + Strobe
 						return this.joy1Read();
-
-					case 2:
+					}
+					case 2: {
 						// 0x4017:
 						// Joystick 2 + Strobe
 						// https://wiki.nesdev.com/w/index.php/Zapper
@@ -158,62 +154,64 @@ Mappers[0].prototype = {
 							w |= 0x1 << 4;
 						}
 						return (this.joy2Read() | w) & 0xffff;
+					}
 				}
 				break;
+			}
 		}
 		return 0;
 	},
 
 	regWrite: function(address, value) {
 		switch (address) {
-			case 0x2000:
+			case 0x2000: {
 				// PPU Control register 1
 				this.nes.cpu.mem[address] = value;
 				this.nes.ppu.updateControlReg1(value);
 				break;
-
-			case 0x2001:
+			}
+			case 0x2001: {
 				// PPU Control register 2
 				this.nes.cpu.mem[address] = value;
 				this.nes.ppu.updateControlReg2(value);
 				break;
-
-			case 0x2003:
+			}
+			case 0x2003: {
 				// Set Sprite RAM address:
 				this.nes.ppu.writeSRAMAddress(value);
 				break;
-
-			case 0x2004:
+			}
+			case 0x2004: {
 				// Write to Sprite RAM:
 				this.nes.ppu.sramWrite(value);
 				break;
-
-			case 0x2005:
+			}
+			case 0x2005: {
 				// Screen Scroll offsets:
 				this.nes.ppu.scrollWrite(value);
 				break;
-
-			case 0x2006:
+			}
+			case 0x2006: {
 				// Set VRAM address:
 				this.nes.ppu.writeVRAMAddress(value);
 				break;
-
-			case 0x2007:
+			}
+			case 0x2007: {
 				// Write to VRAM:
 				this.nes.ppu.vramWrite(value);
 				break;
-
-			case 0x4014:
+			}
+			case 0x4014: {
 				// Sprite Memory DMA Access
 				this.nes.ppu.sramDMA(value);
 				break;
-
-			case 0x4015:
+			}
+			case 0x4015: {
 				// Sound Channel Switch, DMC Status
 				this.nes.papu.writeReg(address, value);
 				break;
-
-			case 0x4016:
+			}
+			case 0x4016: {
 				// Joystick 1 + Strobe
 				if ((value & 1) === 0 && (this.joypadLastWrite & 1) === 1) {
 					this.joy1StrobeState = 0;
@@ -221,18 +219,19 @@ Mappers[0].prototype = {
 				}
 				this.joypadLastWrite = value;
 				break;
-
-			case 0x4017:
+			}
+			case 0x4017: {
 				// Sound channel frame sequencer:
 				this.nes.papu.writeReg(address, value);
 				break;
-
-			default:
+			}
+			default: {
 				// Sound registers
 				// console.log("write to sound reg");
 				if (address >= 0x4000 && address <= 0x4017) {
 					this.nes.papu.writeReg(address, value);
 				}
+			}
 		}
 	},
 
@@ -247,9 +246,10 @@ Mappers[0].prototype = {
 			case 4:
 			case 5:
 			case 6:
-			case 7:
+			case 7: {
 				ret = this.nes.controllers[1].state[this.joy1StrobeState];
 				break;
+			}
 			case 8:
 			case 9:
 			case 10:
@@ -260,14 +260,17 @@ Mappers[0].prototype = {
 			case 15:
 			case 16:
 			case 17:
-			case 18:
+			case 18: {
 				ret = 0;
 				break;
-			case 19:
+			}
+			case 19: {
 				ret = 1;
 				break;
-			default:
+			}
+			default: {
 				ret = 0;
+			}
 		}
 
 		this.joy1StrobeState++;
@@ -289,9 +292,10 @@ Mappers[0].prototype = {
 			case 4:
 			case 5:
 			case 6:
-			case 7:
+			case 7: {
 				ret = this.nes.controllers[2].state[this.joy2StrobeState];
 				break;
+			}
 			case 8:
 			case 9:
 			case 10:
@@ -302,14 +306,17 @@ Mappers[0].prototype = {
 			case 15:
 			case 16:
 			case 17:
-			case 18:
+			case 18: {
 				ret = 0;
 				break;
-			case 19:
+			}
+			case 19: {
 				ret = 1;
 				break;
-			default:
+			}
+			default: {
 				ret = 0;
+			}
 		}
 
 		this.joy2StrobeState++;
@@ -589,7 +596,7 @@ Mappers[1].prototype.setReg = function(reg, value) {
 	let tmp;
 
 	switch (reg) {
-		case 0:
+		case 0: {
 			// Mirroring:
 			tmp = value & 3;
 			if (tmp !== this.mirroring) {
@@ -616,8 +623,9 @@ Mappers[1].prototype.setReg = function(reg, value) {
 			this.vromSwitchingSize = (value >> 4) & 1;
 
 			break;
+		}
 
-		case 1:
+		case 1: {
 			// ROM selection:
 			this.romSelectionReg0 = (value >> 4) & 1;
 
@@ -648,11 +656,10 @@ Mappers[1].prototype.setReg = function(reg, value) {
 			}
 
 			break;
-
-		case 2:
+		}
+		case 2: {
 			// ROM selection:
 			this.romSelectionReg1 = (value >> 4) & 1;
-
 			// Check whether the cart has VROM:
 			if (this.nes.rom.vromCount > 0) {
 				// Select VROM bank at 0x1000:
@@ -669,8 +676,8 @@ Mappers[1].prototype.setReg = function(reg, value) {
 				}
 			}
 			break;
-
-		default:
+		}
+		default: {
 			// Select ROM bank:
 			// -------------------------
 			tmp = value & 0xf;
@@ -707,6 +714,7 @@ Mappers[1].prototype.setReg = function(reg, value) {
 					this.loadRomBank(bank, 0x8000);
 				}
 			}
+		}
 	}
 };
 
@@ -880,7 +888,7 @@ Mappers[4].prototype.write = function(address, value) {
 	}
 
 	switch (address) {
-		case 0x8000:
+		case 0x8000: {
 			// Command/Address Select register
 			this.command = value & 7;
 			let tmp = (value >> 6) & 1;
@@ -890,13 +898,13 @@ Mappers[4].prototype.write = function(address, value) {
 			this.prgAddressSelect = tmp;
 			this.chrAddressSelect = (value >> 7) & 1;
 			break;
-
-		case 0x8001:
+		}
+		case 0x8001: {
 			// Page number for command
 			this.executeCommand(this.command, value);
 			break;
-
-		case 0xa000:
+		}
+		case 0xa000: {
 			// Mirroring select
 			if ((value & 1) !== 0) {
 				this.nes.ppu.setMirroring(this.nes.rom.HORIZONTAL_MIRRORING);
@@ -904,40 +912,41 @@ Mappers[4].prototype.write = function(address, value) {
 				this.nes.ppu.setMirroring(this.nes.rom.VERTICAL_MIRRORING);
 			}
 			break;
-
-		case 0xa001:
+		}
+		case 0xa001: {
 			// SaveRAM Toggle
 			// TODO
 			//nes.getRom().setSaveState((value&1)!=0);
 			break;
-
-		case 0xc000:
+		}
+		case 0xc000: {
 			// IRQ Counter register
 			this.irqCounter = value;
 			//nes.ppu.mapperIrqCounter = 0;
 			break;
-
-		case 0xc001:
+		}
+		case 0xc001: {
 			// IRQ Latch register
 			this.irqLatchValue = value;
 			break;
-
-		case 0xe000:
+		}
+		case 0xe000: {
 			// IRQ Control Reg 0 (disable)
 			//irqCounter = irqLatchValue;
 			this.irqEnable = 0;
 			break;
-
-		case 0xe001:
+		}
+		case 0xe001: {
 			// IRQ Control Reg 1 (enable)
 			this.irqEnable = 1;
 			break;
-
-		default:
+		}
+		default: {
 			// Not a MMC3 register.
 			// The game has probably crashed,
 			// since it tries to write to ROM..
 			// IGNORE.
+		}
 	}
 };
 

@@ -143,7 +143,7 @@ CPU.prototype = {
 			this.irqRequested = false;
 		}
 
-		if (null == this.nes.mmap) {
+		if (null === this.nes.mmap) {
 			return;
 		}
 		let opinf = this.opdata[this.nes.mmap.load(this.REG_PC + 1)];
@@ -1322,7 +1322,7 @@ CPU.prototype = {
 	},
 
 	doNonMaskableInterrupt: function(status) {
-		if (null == this.nes.mmap) {
+		if (null === this.nes.mmap) {
 			return;
 		}
 		if ((this.nes.mmap.load(0x2000) & 128) !== 0) {

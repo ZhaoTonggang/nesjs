@@ -7,12 +7,16 @@ NESJS is an improvement based on JSNES.
 ## UPDATE & IMPROVEMENT
 
 1.Add support for Mapper240 and Mapper241.
+
 2.Update the way variables are declared.
+
 3.Speed up your mobile devices.
+
 4.Fixed some issues.
 
 ## Maintainers
 - [Zhao Tonggang](https://github.com/ZhaoTonggang)
+
 
 # Here are some of the messages left by the original authors of JSNES
 
