@@ -1,16 +1,16 @@
-var path = require("path");
+let path = require("path");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
   entry: {
-    jsnes: "./src/index.js",
-    "jsnes.min": "./src/index.js",
+    nesjs: "./src/index.js",
+    "nesjs.min": "./src/index.js",
   },
   devtool: "source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js",
-    library: "jsnes",
+    library: "nesjs",
     libraryTarget: "umd",
     umdNamedDefine: true,
   },

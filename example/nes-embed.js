@@ -10,29 +10,29 @@ let audio_samples_R = new Float32Array(SAMPLE_COUNT);
 let audio_write_cursor = 0,
 	audio_read_cursor = 0;
 
-let nes = new jsnes.NES({
-	onFrame: function(framebuffer_24) {
+let nes = new nesjs.NES({
+	onFrame: (framebuffer_24) => {
 		for (let i = 0; i < FRAMEBUFFER_SIZE; i++) framebuffer_u32[i] = 0xFF000000 | framebuffer_24[i];
 	},
-	onAudioSample: function(l, r) {
+	onAudioSample: (l, r) => {
 		audio_samples_L[audio_write_cursor] = l;
 		audio_samples_R[audio_write_cursor] = r;
 		audio_write_cursor = (audio_write_cursor + 1) & SAMPLE_MASK;
 	},
 });
 
-function onAnimationFrame() {
+const onAnimationFrame = () => {
 	window.requestAnimationFrame(onAnimationFrame);
 
 	image.data.set(framebuffer_u8);
 	canvas_ctx.putImageData(image, 0, 0);
 }
 
-function audio_remain() {
+const audio_remain = () => {
 	return (audio_write_cursor - audio_read_cursor) & SAMPLE_MASK;
 }
 
-function audio_callback(event) {
+const audio_callback = (event) => {
 	let dst = event.outputBuffer;
 	let len = dst.length;
 
@@ -50,37 +50,54 @@ function audio_callback(event) {
 	audio_read_cursor = (audio_read_cursor + len) & SAMPLE_MASK;
 }
 
-function keyboard(callback, event) {
+const keyboard = (callback, event) => {
 	let player = 1;
 	switch (event.keyCode) {
-		case 38: // UP
-			callback(player, jsnes.Controller.BUTTON_UP);
+		case 38: {
+			// UP
+			callback(player, nesjs.Controller.BUTTON_UP);
 			break;
-		case 40: // Down
-			callback(player, jsnes.Controller.BUTTON_DOWN);
+		}
+		case 40: {
+			// Down
+			callback(player, nesjs.Controller.BUTTON_DOWN);
 			break;
-		case 37: // Left
-			callback(player, jsnes.Controller.BUTTON_LEFT);
+		}
+		case 37: {
+			// Left
+			callback(player, nesjs.Controller.BUTTON_LEFT);
 			break;
-		case 39: // Right
-			callback(player, jsnes.Controller.BUTTON_RIGHT);
+		}
+		case 39: {
+			// Right
+			callback(player, nesjs.Controller.BUTTON_RIGHT);
 			break;
+		}
 		case 65: // 'a' - qwerty, dvorak
-		case 81: // 'q' - azerty
-			callback(player, jsnes.Controller.BUTTON_A);
+		case 81: {
+			// 'q' - azerty
+			callback(player, nesjs.Controller.BUTTON_A);
 			break;
+		}
 		case 83: // 's' - qwerty, azerty
-		case 79: // 'o' - dvorak
-			callback(player, jsnes.Controller.BUTTON_B);
+		case 79: {
+			// 'o' - dvorak
+			callback(player, nesjs.Controller.BUTTON_B);
 			break;
-		case 9: // Tab
-			callback(player, jsnes.Controller.BUTTON_SELECT);
+		}
+		case 9: {
+			// Tab
+			callback(player, nesjs.Controller.BUTTON_SELECT);
 			break;
-		case 13: // Return
-			callback(player, jsnes.Controller.BUTTON_START);
+		}
+		case 13: {
+			// Return
+			callback(player, nesjs.Controller.BUTTON_START);
 			break;
-		default:
+		}
+		default: {
 			break;
+		}
 	}
 }
 

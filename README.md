@@ -14,41 +14,21 @@ NESJS is an improvement based on JSNES.
 
 4.Fixed some issues.
 
-## Maintainers
-- [Zhao Tonggang](https://github.com/ZhaoTonggang)
+## USE FOR WEB
 
-
-# Here are some of the messages left by the original authors of JSNES
-
-# JSNES
-
-A JavaScript NES emulator.
-
-It's a library that works in both the browser and Node.js. The browser UI is available at [https://github.com/bfirsh/jsnes-web](https://github.com/bfirsh/jsnes-web).
-
-## Installation
-
-For Node.js or Webpack:
-
-    $ npm install jsnes
-
-(Or `yarn add jsnes`.)
-
-In the browser, you can use [unpkg](https://unpkg.com):
+In the web, you can use [unpkg](https://unpkg.com):
 
 ```html
-<script type="text/javascript" src="https://unpkg.com/jsnes/dist/jsnes.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/nesjs/dist/nesjs.min.js"></script>
 ```
-
-## Usage
 
 ```javascript
 // Initialize and set up outputs
-let nes = new jsnes.NES({
-  onFrame: function(frameBuffer) {
+const nes = new nesjs.NES({
+  onFrame: (frameBuffer) => {
     // ... write frameBuffer to screen
   },
-  onAudioSample: function(left, right) {
+  onAudioSample: (left, right) => {
     // ... play audio sample
   }
 });
@@ -67,12 +47,18 @@ nes.frame();
 // ...
 
 // Hook up whatever input device you have to the controller.
-nes.buttonDown(1, jsnes.Controller.BUTTON_A);
+nes.buttonDown(1, nesjs.Controller.BUTTON_A);
 nes.frame();
-nes.buttonUp(1, jsnes.Controller.BUTTON_A);
+nes.buttonUp(1, nesjs.Controller.BUTTON_A);
 nes.frame();
 // ...
 ```
+
+## USE FOR Node.js
+
+    $ npm install jsnes
+
+(Or `yarn add nesjs`.)
 
 ## Build
 
@@ -80,11 +66,23 @@ To build a distribution:
 
     $ yarn run build
 
-This will create `dist/jsnes.min.js`.
+This will create `dist/nesjs.min.js`.
 
 ## Running tests
 
     $ yarn test
+
+## Maintainers
+- [Zhao Tonggang](https://github.com/ZhaoTonggang)
+
+
+# Here are some of the messages left by the original authors of JSNES
+
+# JSNES
+
+A JavaScript NES emulator.
+
+It's a library that works in both the browser and Node.js. The browser UI is available at [https://github.com/bfirsh/jsnes-web](https://github.com/bfirsh/jsnes-web).
 
 ## Embedding JSNES in a web page
 
