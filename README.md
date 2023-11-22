@@ -56,7 +56,7 @@ nes.frame();
 
 ## USE FOR Node.js
 
-    $ npm install jsnes
+    $ npm install nesjs
 
 (Or `yarn add nesjs`.)
 
